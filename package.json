@@ -1,0 +1,23 @@
+{
+  "name": "mrodyybot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc"
+  },
+  "type": "module",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^10.0.0",
+    "node-telegram-bot-api": "^0.54.0",
+    "python-shell": "^3.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^16.7.4",
+    "@types/node-telegram-bot-api": "^0.51.4",
+    "typescript": "^4.4.2"
+  }
+}
