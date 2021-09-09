@@ -3,6 +3,10 @@
 
 import TlgBot from 'node-telegram-bot-api';
 import ExecuteScript from './buttons_controllers.js';
+import path from 'path';
+import { URL } from 'url';
+import IConfig from '../interfaces/Iconfig.js';
+const Script: ExecuteScript = new ExecuteScript();
 
 const buttons = {
   reply_markup: {
@@ -24,26 +28,45 @@ const buttons = {
 }
 
 export function displayButtons(bot: TlgBot, msg: TlgBot.Message): void {
+  const chatId: number = msg.chat.id;
 
-  bot.sendMessage(msg.chat.id, 'Choose and option:', buttons )
-  bot.on('callback_query', (action: TlgBot.CallbackQuery): void => {
+  bot.sendMessage(chatId, 'Choose and option:', buttons )
+  bot.on('callback_query',  (action: TlgBot.CallbackQuery): void => {
 
-    const data = action.data;
+    const data: string | undefined = action.data;
     switch (data) {
       case 'local':
-        const aa = new ExecuteScript().run();
+        console.log('local')
         break;
 
       case 'MegaFiles':
-
+        console.log('mega files')
         break;
       
       case 'uploadToLocal':
-        
+        console.log('Upload to local')
         break;
       
-      case 'uploadtoMega':
+      case 'uploadToMega':
+        bot.sendMessage(chatId, 'Send the document:');
+        bot.on('document', async (msg: TlgBot.Message) => {
+          const fileID = msg.document?.file_id;
+          if (fileID) {
+            console.log(msg);
 
+            const cfg: IConfig = {
+              fileID : fileID,
+              fileName: 'a'
+            }
+            Script.downloadFromTlg(bot, cfg);
+            
+            bot.sendMessage(chatId, 'Worked')
+            
+          } else {
+            bot.sendMessage(chatId, 'err')
+          }
+          
+        })
         break;
     }
   })

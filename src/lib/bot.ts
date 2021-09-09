@@ -3,7 +3,6 @@
 
 import TlgBot from 'node-telegram-bot-api';
 import { getAPIKEY } from './get_keys.js';
-import { Options } from './optionsEnum.js';
 import Controllers from './controller.js';
 
 class Bot {
@@ -12,20 +11,19 @@ class Bot {
   private Controller: Controllers = new Controllers();
 
 
-  private updates() {
-
+  private updates(): void {
     this.bot.onText( /\/connect/, (msg: TlgBot.Message): void => {
       this.Controller.connect(this.bot, msg);
-          this.bot.on('photo', (msg: TlgBot.Message): void => {
-            if (msg.photo) {
-              msg.photo.forEach(async (p: TlgBot.PhotoSize): Promise<void> => {
-                await this.bot.downloadFile(p.file_id, './photos')
-              })
-            }
-          })
+      this.bot.on('photo', (msg: TlgBot.Message): void => {
+        if (msg.photo) {
+          msg.photo.forEach(async (p: TlgBot.PhotoSize): Promise<void> => {
+            await this.bot.downloadFile(p.file_id, './photos')
+          });
+        }
+      });
     });
   }
-  public run() {
+  public run(): void {
     this.updates()
   }
 }
