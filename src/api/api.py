@@ -10,7 +10,7 @@ class API:
 
   cwd = path.dirname(__file__)
   temp_path = path.join(cwd, 'temp')
-
+  print(temp_path)
   mega = Mega()
 
   def connect(self) -> Mega:
@@ -27,6 +27,9 @@ class API:
   def get_file(self, name):
     a = self.connect()
     return a.find(name)
+
+  def a():
+    print('a')
 
   def download(self) -> dict[str, str]:
     
@@ -54,5 +57,5 @@ class API:
 
 
 
-api = API('XXXX@gmail.com', 'PASSWORD');
+api = API('', '');
 print(api.download())
