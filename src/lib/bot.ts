@@ -13,30 +13,20 @@ class Bot {
 
 
   private updates() {
-    this.bot.on('message', (msg: TlgBot.Message) => {
-      switch (msg.text) {
-        case Options['connect']:
-          this.Controller.connect(this.bot, msg);
 
-          this.bot.on('photo', (msg) => {
+    this.bot.onText( /\/connect/, (msg: TlgBot.Message): void => {
+      this.Controller.connect(this.bot, msg);
+          this.bot.on('photo', (msg: TlgBot.Message): void => {
             if (msg.photo) {
-              msg.photo.forEach(async p => {
+              msg.photo.forEach(async (p: TlgBot.PhotoSize): Promise<void> => {
                 await this.bot.downloadFile(p.file_id, './photos')
               })
             }
           })
-          break;
-        case Options['upload']:
-          this.bot.sendMessage(msg.chat.id, 'Working');
-          break;
-        case Options['fetch']:
-          this.bot.sendMessage(msg.chat.id, 'Working fetch');
-          break;
-      }
     });
   }
   public run() {
     this.updates()
   }
 }
-let a = new Bot().run()
+new Bot().run()

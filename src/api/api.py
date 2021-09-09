@@ -1,7 +1,7 @@
 # Copyright © alejandro0619 alejandrolpz0619@gmail.com
 # Code under MIT license.
 from mega import Mega
-from os import getcwd, path
+from os import path
 
 class API:
   def __init__(self, usr, pswd):
@@ -10,7 +10,6 @@ class API:
 
   cwd = path.dirname(__file__)
   temp_path = path.join(cwd, 'temp')
-  print(temp_path)
 
   mega = Mega()
 
@@ -40,7 +39,7 @@ class API:
         "response_status" : "OK"
       }
     
-    
+
     except PermissionError:
       return {
         "response" : "completed with problems.",
