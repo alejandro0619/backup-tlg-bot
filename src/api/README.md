@@ -1,6 +1,7 @@
-# This file will be updated as I continue adding some features to the bot.
+# 🐱‍🏍 API 🐱‍🏍
+## This file will be updated as I continue adding some features to the bot.
 
-# Features available:
+## Features available:
  - Connect
  - Download file
  - Find a file.
