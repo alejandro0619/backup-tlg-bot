@@ -18,8 +18,6 @@ export default class ExecuteScript {
       this.pyShell.send(JSON.stringify([1, 1, 1]));
       this.pyShell.on('message', msg => {
         console.log('Nodejs:',msg)
-
-
       });
 
       this.pyShell.end((err: PythonShellError) => {
