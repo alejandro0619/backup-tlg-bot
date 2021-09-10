@@ -3,8 +3,6 @@
 
 import TlgBot from 'node-telegram-bot-api';
 import ExecuteScript from './buttons_controllers.js';
-import path from 'path';
-import { URL } from 'url';
 import IConfig from '../interfaces/Iconfig.js';
 const Script: ExecuteScript = new ExecuteScript();
 
@@ -27,11 +25,13 @@ const buttons = {
   }
 }
 
+// display buttons and trigger a controller on event
 export function displayButtons(bot: TlgBot, msg: TlgBot.Message): void {
   const chatId: number = msg.chat.id;
 
-  bot.sendMessage(chatId, 'Choose and option:', buttons )
-  bot.on('callback_query',  (action: TlgBot.CallbackQuery): void => {
+  bot.sendMessage(chatId, 'Choose and option:', buttons);
+  
+  bot.on('callback_query',  async (action: TlgBot.CallbackQuery): Promise<void> => {
 
     const data: string | undefined = action.data;
     switch (data) {
@@ -48,15 +48,21 @@ export function displayButtons(bot: TlgBot, msg: TlgBot.Message): void {
         break;
       
       case 'uploadToMega':
-        bot.sendMessage(chatId, 'Send the document:');
-        bot.on('document', async (msg: TlgBot.Message) => {
-          const fileID = msg.document?.file_id;
-          if (fileID) {
-            console.log(msg);
 
+        const opt: TlgBot.AnswerCallbackQueryOptions = {
+          show_alert: false,
+          text: 'Testing'
+
+        }
+        await bot.answerCallbackQuery(action.id , opt);
+
+        bot.on('document', async (msg: TlgBot.Message) => {
+          const fileID: string | undefined = msg.document?.file_id;
+          const fileName: string | undefined = msg.document?.file_name;
+          if (fileID && fileName) {
             const cfg: IConfig = {
-              fileID : fileID,
-              fileName: 'a'
+              fileID: fileID,
+              fileName: fileName
             }
             Script.downloadFromTlg(bot, cfg);
             
@@ -66,8 +72,12 @@ export function displayButtons(bot: TlgBot, msg: TlgBot.Message): void {
             bot.sendMessage(chatId, 'err')
           }
           
-        })
+        });
         break;
+
+      default:
+        bot.sendMessage(chatId, 'Please select an option below');
+        
     }
   })
 }
