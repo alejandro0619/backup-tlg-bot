@@ -4,6 +4,8 @@
 import TlgBot from 'node-telegram-bot-api';
 import ExecuteScript from './buttons_controllers.js';
 import IConfig from '../interfaces/Iconfig.js';
+import DownloadFromTlgResponse from '../interfaces/Iresponse_json.js';
+
 const Script: ExecuteScript = new ExecuteScript();
 
 const buttons = {
@@ -31,9 +33,10 @@ export function displayButtons(bot: TlgBot, msg: TlgBot.Message): void {
 
   bot.sendMessage(chatId, 'Choose and option:', buttons);
   
-  bot.on('callback_query',  async (action: TlgBot.CallbackQuery): Promise<void> => {
+  bot.on('callback_query', async (action: TlgBot.CallbackQuery): Promise<void> => {
 
     const data: string | undefined = action.data;
+
     switch (data) {
       case 'local':
         console.log('local')
@@ -48,25 +51,31 @@ export function displayButtons(bot: TlgBot, msg: TlgBot.Message): void {
         break;
       
       case 'uploadToMega':
-
         const opt: TlgBot.AnswerCallbackQueryOptions = {
           show_alert: false,
           text: 'Testing'
 
         }
-        await bot.answerCallbackQuery(action.id , opt);
+        await bot.answerCallbackQuery(action.id, opt);
 
         bot.on('document', async (msg: TlgBot.Message) => {
           const fileID: string | undefined = msg.document?.file_id;
           const fileName: string | undefined = msg.document?.file_name;
+          // check if both fileID and fileName exists
           if (fileID && fileName) {
             const cfg: IConfig = {
               fileID: fileID,
               fileName: fileName
             }
-            Script.downloadFromTlg(bot, cfg);
+            const download: DownloadFromTlgResponse = await Script.downloadFromTlg({ bot, cfg });
             
-            bot.sendMessage(chatId, 'Worked')
+            // check if the new path is returned
+            if (download.path) {
+              Script.runScript(download)
+              
+            } else {
+              bot.sendMessage(chatId, 'Sorry, an error ocurred, try again.');
+            }
             
           } else {
             bot.sendMessage(chatId, 'err')
@@ -77,8 +86,9 @@ export function displayButtons(bot: TlgBot, msg: TlgBot.Message): void {
 
       default:
         bot.sendMessage(chatId, 'Please select an option below');
+        break;
         
     }
-  })
+  });
 }
 
